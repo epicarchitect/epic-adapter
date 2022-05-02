@@ -14,5 +14,5 @@ allprojects {
 ### Step 2. Add the dependency
 ```Kotlin
 dependencies {
-    implementation 'com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.1'
+    implementation 'com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.3'
 }

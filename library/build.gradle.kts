@@ -14,8 +14,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            isMinifyEnabled = false
         }
     }
 
@@ -52,7 +51,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.alexander-alexander"
             artifactId = "BindingRecyclerViewAdapter"
-            version = "1.0.2"
+            version = "1.0.3"
             afterEvaluate {
                 from(components["release"])
             }
