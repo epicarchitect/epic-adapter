@@ -5,8 +5,7 @@ Add it in your root build.gradle at the end of repositories:
 ```Kotlin
 allprojects {
     repositories {
-        ...
-        maven { url 'https://jitpack.io' }
+        maven("https://jitpack.io")
     }
 }
 ```
@@ -14,12 +13,11 @@ allprojects {
 ### Add the dependency
 ```Kotlin
 dependencies {
-    implementation 'com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.3'
+    implementation("com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.3")
 }
 ```
 ### Usage
 ```Kotlin
-
 recyclerView.adapter = BindingRecyclerViewAdapter {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
         bind { item ->
