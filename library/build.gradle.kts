@@ -43,15 +43,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            groupId = "com.github.alexander-kolmachikhin"
-            artifactId = "binding-recycler-view-adapter"
-            version = "1.0.0"
-
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
                 from(components["release"])
+                groupId = "com.github.alexander-kolmachikhin"
+                artifactId = "binding-recycler-view-adapter"
+                version = "1.0.0"
             }
         }
     }
