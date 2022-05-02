@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.apache.commons.compress.archivers.zip.ExtraFieldUtils.register
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -31,12 +33,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
 }
 
 dependencies {
@@ -45,4 +41,18 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.alexander-kolmachikhin"
+            artifactId = "binding-recycler-view-adapter"
+            version = "1.0.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
