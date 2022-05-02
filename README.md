@@ -16,3 +16,17 @@ allprojects {
 dependencies {
     implementation 'com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.3'
 }
+```
+### Usage
+```Kotlin
+
+recyclerView.adapter = BindingRecyclerViewAdapter {
+    setup<Item, ItemBinding>(ItemBinding::inflate) {
+        bind { item ->
+            textView.text = item.text
+        }
+    }
+}
+
+recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
+```
