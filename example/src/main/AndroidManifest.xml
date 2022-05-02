@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:label="Binding Adapter Example"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BindingRecyclerViewAdapter">
+        android:theme="@style/Theme.Material3.DayNight">
 
         <activity
             android:name=".MainActivity"
