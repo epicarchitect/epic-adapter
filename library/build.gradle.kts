@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.apache.commons.compress.archivers.zip.ExtraFieldUtils.register
-
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -48,7 +46,7 @@ afterEvaluate {
         publications {
             register<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.github.alexander-kolmachikhin"
+                groupId = "com.github.alexander-alexander"
                 artifactId = "BindingRecyclerViewAdapter"
                 version = "1.0.0"
             }
