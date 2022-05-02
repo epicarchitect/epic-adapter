@@ -1,7 +1,6 @@
 # BindingRecyclerViewAdapter
 
-### Add the JitPack repository to your build file 
-Add it in your root build.gradle at the end of repositories:
+### Add the JitPack repository to your root build file 
 ```Kotlin
 allprojects {
     repositories {
