@@ -49,7 +49,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 from(components["release"])
                 groupId = "com.github.alexander-kolmachikhin"
-                artifactId = "binding-recycler-view-adapter"
+                artifactId = "BindingRecyclerViewAdapter"
                 version = "1.0.0"
             }
         }
