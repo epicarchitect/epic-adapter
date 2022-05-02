@@ -31,6 +31,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
@@ -41,14 +47,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            register<MavenPublication>("release") {
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.alexander-alexander"
+            artifactId = "BindingRecyclerViewAdapter"
+            version = "1.0.0"
+            afterEvaluate {
                 from(components["release"])
-                groupId = "com.github.alexander-alexander"
-                artifactId = "BindingRecyclerViewAdapter"
-                version = "1.0.0"
             }
         }
     }
