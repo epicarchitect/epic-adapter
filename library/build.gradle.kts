@@ -49,7 +49,7 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.github.alexander-alexander"
+            groupId = "com.github.alexander-kolmachikhin"
             artifactId = "BindingRecyclerViewAdapter"
             version = "1.0.3"
             afterEvaluate {
