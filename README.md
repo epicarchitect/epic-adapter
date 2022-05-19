@@ -55,9 +55,10 @@ recyclerView.adapter = BindingRecyclerViewAdapter {
         }
         // if the data comes immediately you can use this construction
     }.apply { loadItems(items) }
-    
+
 }
 
+// If the data comes with a delay, use this
 recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
 ```
 
@@ -70,8 +71,8 @@ recyclerView.adapter = BindingRecyclerViewAdapter {
         bind { item ->
             textView.text = item.text
         }
-        
-        // DiffUtil is used internally by default by comparing hash codes of objects
+
+        // DiffUtil is used internally by default by comparing hash codes of objects, but you can customize it:
         diffUtil {
             areItemsTheSame { oldItem, newItem ->
                 oldItem.id == newItem.id
