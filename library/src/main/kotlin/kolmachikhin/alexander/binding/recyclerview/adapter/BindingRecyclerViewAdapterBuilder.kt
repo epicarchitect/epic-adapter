@@ -2,6 +2,7 @@
 
 package kolmachikhin.alexander.binding.recyclerview.adapter
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -9,21 +10,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 
 fun RecyclerView.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
+fun ViewPager2.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
 
-fun LifecycleOwner.BindingRecyclerViewAdapter(
+fun buildBindingRecyclerViewAdapter(
+    lifecycleOwner: LifecycleOwner,
     setup: BindingRecyclerViewAdapterBuilder.() -> Unit
-) = BindingRecyclerViewAdapter(lifecycleScope, setup)
+) = BindingRecyclerViewAdapterBuilder(lifecycleOwner).apply(setup).build()
 
-fun BindingRecyclerViewAdapter(
-    coroutineScope: CoroutineScope,
-    setup: BindingRecyclerViewAdapterBuilder.() -> Unit
-) = BindingRecyclerViewAdapterBuilder(coroutineScope).apply(setup).build()
-
-class BindingRecyclerViewAdapterBuilder(val coroutineScope: CoroutineScope) {
+class BindingRecyclerViewAdapterBuilder(val lifecycleOwner: LifecycleOwner) {
 
     val adapter = BindingRecyclerViewAdapter()
 
@@ -32,24 +32,33 @@ class BindingRecyclerViewAdapterBuilder(val coroutineScope: CoroutineScope) {
         setup: ItemProviderBuilder<ITEM, VIEW_BINDING>.() -> Unit = {}
     ) = adapter.addItemConfig(
         ITEM::class,
-        ItemProviderBuilder<ITEM, VIEW_BINDING>(coroutineScope, bindingFactory).apply(setup).build()
+        ItemProviderBuilder<ITEM, VIEW_BINDING>(lifecycleOwner, bindingFactory).apply(setup).build()
     )
 
     fun build() = adapter
 }
 
 class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
-    private val coroutineScope: CoroutineScope,
+    private val lifecycleOwner: LifecycleOwner,
     private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING
 ) {
-    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, ITEM) -> Unit = { _, _ -> }
+    private var initFunction: VIEW_BINDING.() -> Unit = {}
+    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, ITEM, holder: BindingRecyclerViewAdapter.BindingHolder) -> Unit = { _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
+    fun init (function: VIEW_BINDING.() -> Unit){
+        initFunction = function
+    }
+
     fun bind(function: suspend VIEW_BINDING.(ITEM) -> Unit) {
-        bindFunction = { _, item -> function(item) }
+        bindFunction = { _, item, _ -> function(item) }
     }
 
     fun bind(function: suspend VIEW_BINDING.(CoroutineScope, ITEM) -> Unit) {
+        bindFunction = { scope, item, _ -> function(scope, item) }
+    }
+
+    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, ITEM, BindingRecyclerViewAdapter.BindingHolder) -> Unit) {
         bindFunction = function
     }
 
@@ -61,10 +70,14 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
         bindingHolderFactory = { layoutInflater, container, attachToToot ->
             object : BindingRecyclerViewAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
                 private var bindJob: kotlinx.coroutines.Job? = null
-
+                init {
+                    (binding as VIEW_BINDING).initFunction()
+                }
                 override fun bind(item: Any) {
-                    bindJob = coroutineScope.launch {
-                        (binding as VIEW_BINDING).bindFunction(this, item as ITEM)
+                    val holder = this
+                    bindJob = lifecycleOwner.lifecycleScope.launch {
+                        (binding as VIEW_BINDING).bindFunction(this, item as ITEM, holder)
+                        awaitCancellation()
                     }
                 }
 

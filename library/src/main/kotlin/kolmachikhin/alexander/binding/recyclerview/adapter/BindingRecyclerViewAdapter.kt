@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import kotlinx.coroutines.*
-import kolmachikhin.alexander.binding.recyclerview.adapter.BindingRecyclerViewAdapter.BindingHolder
 import kotlin.reflect.KClass
 
-class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingHolder>() {
+class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingRecyclerViewAdapter.BindingHolder>() {
 
+    /**
+     * Hash code of item class (ItemViewType) to ItemProvider
+     */
     private val itemConfigs = HashMap<Int, ItemConfig>()
     private var items = emptyList<Any>()
 
@@ -21,7 +22,10 @@ class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingHolder>() {
             false
         )
 
-    override fun onBindViewHolder(holder: BindingHolder, position: Int) = holder.bind(items[position])
+    override fun onBindViewHolder(holder: BindingHolder, position: Int) = run {
+
+        holder.bind(items[position])
+    }
 
     override fun onViewRecycled(holder: BindingHolder) = holder.recycle()
 
@@ -29,11 +33,11 @@ class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingHolder>() {
 
     override fun getItemViewType(position: Int) = getItemViewType(items[position])
 
-    private fun getItemViewType(item: Any) = item::class.hashCode()
+    fun getItemViewType(item: Any) = item::class.hashCode()
 
-    private fun getItemConfig(viewType: Int) = checkNotNull(itemConfigs[viewType])
+    fun getItemConfig(viewType: Int) = checkNotNull(itemConfigs[viewType])
 
-    private fun getItemConfig(item: Any) = getItemConfig(getItemViewType(item))
+    fun getItemConfig(item: Any) = getItemConfig(getItemViewType(item))
 
     fun addItemConfig(itemClass: KClass<*>, itemConfig: ItemConfig) {
         itemConfigs[itemClass.hashCode()] = itemConfig
@@ -42,7 +46,7 @@ class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingHolder>() {
     fun loadItems(newItems: List<Any>) {
         val diffResult = DiffUtil.calculateDiff(DiffCallback(items, newItems))
         items = newItems
-        diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     abstract class ItemConfig(
