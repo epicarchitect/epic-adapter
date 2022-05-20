@@ -73,7 +73,7 @@ recyclerView.adapter = BindingRecyclerViewAdapter(lifecycleScope) {
             textView.text = item.text
         }
 
-        // DiffUtil is used internally by default by comparing hash codes of objects, but you can customize it:
+        // Diffutils uses the equals function by default, but you can override it:
         diffUtil {
             areItemsTheSame { oldItem, newItem ->
                 oldItem.id == newItem.id
