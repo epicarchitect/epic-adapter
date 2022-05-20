@@ -65,7 +65,8 @@ recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
 ### DiffUtil usage
 
 ```Kotlin
-recyclerView.adapter = BindingRecyclerViewAdapter {
+// lifecycleScope is optional
+recyclerView.adapter = BindingRecyclerViewAdapter(lifecycleScope) {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
 
         bind { item ->
@@ -90,7 +91,7 @@ recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
 ### ViewTypes usage
 
 ```Kotlin
- recyclerView.adapter = buildBindingRecyclerViewAdapter(this) {
+ recyclerView.adapter = buildBindingRecyclerViewAdapter(lifecycleScope) {
     // There are 2 setups for each viewType
     setup<Item1, Item1Binding>(Item1Binding::inflate) {
         bind { item ->

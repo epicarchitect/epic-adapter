@@ -12,18 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 
 fun RecyclerView.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
 fun ViewPager2.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
 
-fun buildBindingRecyclerViewAdapter(
-    lifecycleOwner: LifecycleOwner,
+fun LifecycleOwner.BindingRecyclerViewAdapter(
     setup: BindingRecyclerViewAdapterBuilder.() -> Unit
-) = BindingRecyclerViewAdapterBuilder(lifecycleOwner).apply(setup).build()
+) = BindingRecyclerViewAdapter(lifecycleScope, setup)
 
-class BindingRecyclerViewAdapterBuilder(val lifecycleOwner: LifecycleOwner) {
+fun BindingRecyclerViewAdapter(
+    coroutineScope: CoroutineScope,
+    setup: BindingRecyclerViewAdapterBuilder.() -> Unit
+) = BindingRecyclerViewAdapterBuilder(coroutineScope).apply(setup).build()
+
+class BindingRecyclerViewAdapterBuilder(val coroutineScope: CoroutineScope) {
 
     val adapter = BindingRecyclerViewAdapter()
 
@@ -32,21 +35,21 @@ class BindingRecyclerViewAdapterBuilder(val lifecycleOwner: LifecycleOwner) {
         setup: ItemProviderBuilder<ITEM, VIEW_BINDING>.() -> Unit = {}
     ) = adapter.addItemConfig(
         ITEM::class,
-        ItemProviderBuilder<ITEM, VIEW_BINDING>(lifecycleOwner, bindingFactory).apply(setup).build()
+        ItemProviderBuilder<ITEM, VIEW_BINDING>(coroutineScope, bindingFactory).apply(setup).build()
     )
 
     fun build() = adapter
 }
 
 class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
-    private val lifecycleOwner: LifecycleOwner,
+    private val coroutineScope: CoroutineScope,
     private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING
 ) {
     private var initFunction: VIEW_BINDING.() -> Unit = {}
     private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, ITEM, holder: BindingRecyclerViewAdapter.BindingHolder) -> Unit = { _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
-    fun init (function: VIEW_BINDING.() -> Unit){
+    fun init(function: VIEW_BINDING.() -> Unit) {
         initFunction = function
     }
 
@@ -70,14 +73,15 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
         bindingHolderFactory = { layoutInflater, container, attachToToot ->
             object : BindingRecyclerViewAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
                 private var bindJob: kotlinx.coroutines.Job? = null
+
                 init {
                     (binding as VIEW_BINDING).initFunction()
                 }
+
                 override fun bind(item: Any) {
                     val holder = this
-                    bindJob = lifecycleOwner.lifecycleScope.launch {
+                    bindJob = coroutineScope.launch {
                         (binding as VIEW_BINDING).bindFunction(this, item as ITEM, holder)
-                        awaitCancellation()
                     }
                 }
 

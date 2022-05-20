@@ -2,10 +2,10 @@ package kolmachikhin.alexander.binding.recyclerview.adapter.example
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import kolmachikhin.alexander.binding.recyclerview.adapter.buildBindingRecyclerViewAdapter
+import kolmachikhin.alexander.binding.recyclerview.adapter.BindingRecyclerViewAdapter
 import kolmachikhin.alexander.binding.recyclerview.adapter.example.databinding.Item1Binding
-import kolmachikhin.alexander.binding.recyclerview.adapter.example.databinding.Item2Binding
 import kolmachikhin.alexander.binding.recyclerview.adapter.requireBindingRecyclerViewAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
 
         // Simple adapter
-        recyclerView.adapter = buildBindingRecyclerViewAdapter(this) {
+        BindingRecyclerViewAdapter {
+
+        }
+        recyclerView.adapter = BindingRecyclerViewAdapter(lifecycleScope) {
             setup<Item1, Item1Binding>(Item1Binding::inflate) {
                 init {
                     textView1.clipToOutline = true
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // adapter with viewTypes
-        /*recyclerView.adapter = buildBindingRecyclerViewAdapter(this) {
+        /*recyclerView.adapter = buildBindingRecyclerViewAdapter(lifecycleScope) {
             setup<Item1, Item1Binding>(Item1Binding::inflate) {
                 bind { item ->
                     textView1.text = item.text
