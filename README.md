@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.3")
+    implementation("com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.4")
 }
 ```
 
