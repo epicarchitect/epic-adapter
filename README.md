@@ -106,7 +106,7 @@ recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
 }
 
 // There is no familiar condition for determining the viewType
-// Instead of the usual condition, when defining a viewType, hash codes of objects are used, as well as primitives
+// Instead of the usual condition, for define a viewType we using hash codes of classes, as well as primitives
 // This means that the contentList must be of type Any, which will contain different objects or primitives
 // The advantage of this approach is that it has a better architecture and flexibility
 
