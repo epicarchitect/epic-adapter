@@ -53,7 +53,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.alexander-kolmachikhin"
             artifactId = "BindingRecyclerViewAdapter"
-            version = "1.0.3"
+            version = "1.0.4"
             afterEvaluate {
                 from(components["release"])
             }
