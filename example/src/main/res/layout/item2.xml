@@ -7,8 +7,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/design_default_color_primary_variant"
         android:background="@color/cardview_shadow_start_color"
-        android:padding="8dp" />
-
+        android:padding="8dp"
+        android:textColor="@color/design_default_color_primary_variant" />
 </FrameLayout>
