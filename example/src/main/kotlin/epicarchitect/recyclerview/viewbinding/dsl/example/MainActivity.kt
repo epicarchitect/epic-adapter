@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import epicarchitect.recyclerview.viewbinding.dsl.BindingRecyclerViewAdapter
+import epicarchitect.recyclerview.viewbinding.dsl.bind
 import epicarchitect.recyclerview.viewbinding.dsl.example.databinding.Item1Binding
 import epicarchitect.recyclerview.viewbinding.dsl.example.databinding.Item2Binding
 import epicarchitect.recyclerview.viewbinding.dsl.requireBindingRecyclerViewAdapter
@@ -18,13 +19,13 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.adapter = BindingRecyclerViewAdapter {
             setup<Item1, Item1Binding>(Item1Binding::inflate) {
-                bind { _, _, item ->
+                bind { item ->
                     textView1.text = item.text
                 }
             }
 
             setup<SealedItem, Item2Binding>(Item2Binding::inflate) {
-                bind { _, _, item ->
+                bind { item ->
                     when (item) {
                         is SealedItem.Closed -> {
                             textView2.text = "Closed"

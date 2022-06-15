@@ -112,3 +112,15 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
     }
 }
 
+
+fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
+    function: suspend VIEW_BINDING.(BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit
+) = bind { _, bindingHolder, item ->
+    function(bindingHolder, item)
+}
+
+fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
+    function: suspend VIEW_BINDING.(ITEM) -> Unit
+) = bind { _, _, item ->
+    function(item)
+}
