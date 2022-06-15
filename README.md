@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.epicarchitect:recyclerview-viewbinding-dsl:1.0.5")
+    implementation("com.github.epicarchitect:recyclerview-viewbinding-dsl:1.0.6")
 }
 ```
 
