@@ -1,7 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package kolmachikhin.alexander.binding.recyclerview.adapter
-
+package epicarchitect.recyclerview.viewbinding.dsl
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 fun RecyclerView.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
+
 fun ViewPager2.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
 
 fun LifecycleOwner.BindingRecyclerViewAdapter(
@@ -46,22 +46,14 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
     private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING
 ) {
     private var initFunction: VIEW_BINDING.() -> Unit = {}
-    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, ITEM, holder: BindingRecyclerViewAdapter.BindingHolder) -> Unit = { _, _, _ -> }
+    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, holder: BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
     fun init(function: VIEW_BINDING.() -> Unit) {
         initFunction = function
     }
 
-    fun bind(function: suspend VIEW_BINDING.(ITEM) -> Unit) {
-        bindFunction = { _, item, _ -> function(item) }
-    }
-
-    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, ITEM) -> Unit) {
-        bindFunction = { scope, item, _ -> function(scope, item) }
-    }
-
-    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, ITEM, BindingRecyclerViewAdapter.BindingHolder) -> Unit) {
+    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit) {
         bindFunction = function
     }
 
@@ -81,7 +73,11 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
                 override fun bind(item: Any) {
                     val holder = this
                     bindJob = coroutineScope.launch {
-                        (binding as VIEW_BINDING).bindFunction(this, item as ITEM, holder)
+                        (binding as VIEW_BINDING).bindFunction(
+                            this,
+                            holder,
+                            item as ITEM
+                        )
                     }
                 }
 
@@ -116,3 +112,15 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
     }
 }
 
+
+fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
+    function: suspend VIEW_BINDING.(BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit
+) = bind { _, bindingHolder, item ->
+    function(bindingHolder, item)
+}
+
+fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
+    function: suspend VIEW_BINDING.(ITEM) -> Unit
+) = bind { _, _, item ->
+    function(item)
+}

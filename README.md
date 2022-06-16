@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.alexander-kolmachikhin:BindingRecyclerViewAdapter:1.0.4")
+    implementation("com.github.epicarchitect:recyclerview-viewbinding-dsl:1.0.6")
 }
 ```
 
@@ -48,13 +48,16 @@ recyclerView.adapter = BindingRecyclerViewAdapter {
         bind { item ->
             textView.text = item.text
         }
-        bind { coroutineScope, item -> }
+        
+        bind { coroutineScope, item -> 
+            textView.text = item.text
+        }
 
-        bind { coroutineScope, item, holder ->
+        bind { coroutineScope, holder, item ->
             textView.text = holder.bindingAdapterPosition.toString()
         }
-        // if the data comes immediately you can use this construction
-    }.apply { loadItems(items) }
+     
+    }
 
 }
 
