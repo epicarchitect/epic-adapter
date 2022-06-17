@@ -13,6 +13,7 @@ private typealias ViewType = Int
 class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingRecyclerViewAdapter.BindingHolder>() {
 
     private val itemConfigs = mutableMapOf<ViewType, ItemConfig>()
+    private val viewTypes = mutableMapOf<KClass<*>, ViewType>()
     private var items = emptyList<Any>()
 
     override fun onCreateViewHolder(
@@ -33,9 +34,13 @@ class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingRecyclerViewAdapt
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int) = getItemViewType(items[position])
+    override fun getItemViewType(position: Int) =
+        getItemViewType(items[position])
 
-    private fun getItemViewType(item: Any) =
+
+    private fun getItemViewType(item: Any) = viewTypes.getOrPut(item::class) { calculateItemViewType(item) }
+
+    private fun calculateItemViewType(item: Any) =
         (listOf(item::class) + item::class.allSuperclasses)
             .firstOrNull { itemConfigs.containsKey(it.hashCode()) }
             ?.hashCode()
