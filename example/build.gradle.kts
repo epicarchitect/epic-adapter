@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "epicarchitect.recyclerview.viewbinding.dsl.example"
+    namespace = "epicarchitect.epic.adapter.example"
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "epicarchitect.recyclerview.viewbinding.dsl.example"
+        applicationId = "epicarchitect.epic.adapter.example"
         minSdk = 21
         targetSdk = 32
         versionCode = 1

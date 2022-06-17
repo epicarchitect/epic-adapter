@@ -1,4 +1,4 @@
-package epicarchitect.recyclerview.viewbinding.dsl
+package epicarchitect.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import kotlin.reflect.full.allSuperclasses
 
 private typealias ViewType = Int
 
-class BindingRecyclerViewAdapter : RecyclerView.Adapter<BindingRecyclerViewAdapter.BindingHolder>() {
+class EpicAdapter : RecyclerView.Adapter<EpicAdapter.BindingHolder>() {
 
     private val itemConfigs = mutableMapOf<ViewType, ItemConfig>()
     private val viewTypes = mutableMapOf<KClass<*>, ViewType>()

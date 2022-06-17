@@ -8,7 +8,7 @@
         android:theme="@style/Theme.Material3.DayNight">
 
         <activity
-            android:name="epicarchitect.recyclerview.viewbinding.dsl.example.MainActivity"
+            android:name="epicarchitect.epic.adapter.example.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

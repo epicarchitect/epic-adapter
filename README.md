@@ -1,4 +1,4 @@
-# BindingRecyclerViewAdapter
+# Epic Adapter
 
 ### Add the JitPack repository to your root build file
 
@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.epicarchitect:recyclerview-viewbinding-dsl:1.0.6")
+    implementation("com.github.epicarchitect:epic-adapter:1.0.7")
 }
 ```
 
@@ -37,7 +37,7 @@ dependencies {
 ### Simple usage (Similarly used with ViewPager2)
 
 ```Kotlin
-recyclerView.adapter = BindingRecyclerViewAdapter {
+recyclerView.adapter = EpicAdapter {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
         // Optional
         init {
@@ -69,7 +69,7 @@ recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
 
 ```Kotlin
 // lifecycleScope is optional
-recyclerView.adapter = BindingRecyclerViewAdapter(lifecycleScope) {
+recyclerView.adapter = EpicAdapter {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
 
         bind { item ->
@@ -88,13 +88,13 @@ recyclerView.adapter = BindingRecyclerViewAdapter(lifecycleScope) {
     }
 }
 
-recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
+recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
 ### ViewTypes usage
 
 ```Kotlin
- recyclerView.adapter = buildBindingRecyclerViewAdapter(lifecycleScope) {
+ recyclerView.adapter = EpicAdapter {
     // There are 2 setups for each viewType
     setup<Item1, Item1Binding>(Item1Binding::inflate) {
         bind { item ->
@@ -117,7 +117,7 @@ val contentList: ArrayList<Any> = ArrayList()
 contentList.add(Item1(text = "viewType1"))
 contentList.add(Item2(text = "viewType2"))
 
-recyclerView.requireBindingRecyclerViewAdapter().loadItems(contentList)
+recyclerView.requireEpicAdapter().loadItems(contentList)
 ```
 
 

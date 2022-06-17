@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "epicarchitect.recyclerview.viewbinding.dsl"
+    namespace = "epicarchitect.recyclerview"
     compileSdk = 32
 
     defaultConfig {
@@ -58,8 +58,8 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             groupId = "com.github.epicarchitect"
-            artifactId = "recyclerview-viewbinding-dsl"
-            version = "1.0.6"
+            artifactId = "epic-adapter"
+            version = "1.0.7"
             afterEvaluate {
                 from(components["release"])
             }

@@ -1,13 +1,13 @@
-package epicarchitect.recyclerview.viewbinding.dsl.example
+package epicarchitect.epic.adapter.example
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import epicarchitect.recyclerview.viewbinding.dsl.BindingRecyclerViewAdapter
-import epicarchitect.recyclerview.viewbinding.dsl.bind
-import epicarchitect.recyclerview.viewbinding.dsl.example.databinding.Item1Binding
-import epicarchitect.recyclerview.viewbinding.dsl.example.databinding.Item2Binding
-import epicarchitect.recyclerview.viewbinding.dsl.requireBindingRecyclerViewAdapter
+import epicarchitect.epic.adapter.example.databinding.Item1Binding
+import epicarchitect.epic.adapter.example.databinding.Item2Binding
+import epicarchitect.recyclerview.EpicAdapter
+import epicarchitect.recyclerview.bind
+import epicarchitect.recyclerview.requireEpicAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        recyclerView.adapter = BindingRecyclerViewAdapter {
+        recyclerView.adapter = EpicAdapter {
             setup<Item1, Item1Binding>(Item1Binding::inflate) {
                 bind { item ->
                     textView1.text = item.text
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        recyclerView.requireBindingRecyclerViewAdapter().loadItems(fakeItems)
+        recyclerView.requireEpicAdapter().loadItems(fakeItems)
     }
 }
 

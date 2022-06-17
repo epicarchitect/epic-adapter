@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package epicarchitect.recyclerview.viewbinding.dsl
+package epicarchitect.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,22 +13,22 @@ import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-fun RecyclerView.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
+fun RecyclerView.requireEpicAdapter() = adapter as EpicAdapter
 
-fun ViewPager2.requireBindingRecyclerViewAdapter() = adapter as BindingRecyclerViewAdapter
+fun ViewPager2.requireEpicAdapter() = adapter as EpicAdapter
 
-fun LifecycleOwner.BindingRecyclerViewAdapter(
-    setup: BindingRecyclerViewAdapterBuilder.() -> Unit
-) = BindingRecyclerViewAdapter(lifecycleScope, setup)
+fun LifecycleOwner.EpicAdapter(
+    setup: EpicAdapterBuilder.() -> Unit
+) = EpicAdapter(lifecycleScope, setup)
 
-fun BindingRecyclerViewAdapter(
+fun EpicAdapter(
     coroutineScope: CoroutineScope,
-    setup: BindingRecyclerViewAdapterBuilder.() -> Unit
-) = BindingRecyclerViewAdapterBuilder(coroutineScope).apply(setup).build()
+    setup: EpicAdapterBuilder.() -> Unit
+) = EpicAdapterBuilder(coroutineScope).apply(setup).build()
 
-class BindingRecyclerViewAdapterBuilder(val coroutineScope: CoroutineScope) {
+class EpicAdapterBuilder(val coroutineScope: CoroutineScope) {
 
-    val adapter = BindingRecyclerViewAdapter()
+    val adapter = EpicAdapter()
 
     inline fun <reified ITEM : Any, VIEW_BINDING : ViewBinding> setup(
         noinline bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING,
@@ -46,14 +46,14 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
     private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING
 ) {
     private var initFunction: VIEW_BINDING.() -> Unit = {}
-    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, holder: BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
+    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, holder: EpicAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
     fun init(function: VIEW_BINDING.() -> Unit) {
         initFunction = function
     }
 
-    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit) {
+    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit) {
         bindFunction = function
     }
 
@@ -61,9 +61,9 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
         diffUtilItemCallbackBuilder.setup()
     }
 
-    fun build() = object : BindingRecyclerViewAdapter.ItemConfig(
+    fun build() = object : EpicAdapter.ItemConfig(
         bindingHolderFactory = { layoutInflater, container, attachToToot ->
-            object : BindingRecyclerViewAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
+            object : EpicAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
                 private var bindJob: kotlinx.coroutines.Job? = null
 
                 init {
@@ -114,7 +114,7 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
 
 
 fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
-    function: suspend VIEW_BINDING.(BindingRecyclerViewAdapter.BindingHolder, ITEM) -> Unit
+    function: suspend VIEW_BINDING.(EpicAdapter.BindingHolder, ITEM) -> Unit
 ) = bind { _, bindingHolder, item ->
     function(bindingHolder, item)
 }
