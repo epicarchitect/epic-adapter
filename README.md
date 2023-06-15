@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.epicarchitect:epic-adapter:1.0.7")
+    implementation("com.github.epicarchitect:epic-adapter:1.0.8")
 }
 ```
 
@@ -61,8 +61,8 @@ recyclerView.adapter = EpicAdapter {
 
 }
 
-// If the data comes with a delay, use this
-recyclerView.requireBindingRecyclerViewAdapter().loadItems(items)
+// load the data
+recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
 ### DiffUtil usage

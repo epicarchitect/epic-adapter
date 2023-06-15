@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
                         is SealedItem.Closed -> {
                             textView2.text = "Closed"
                         }
+
                         is SealedItem.Selected -> {
                             textView2.text = "Selected"
                         }
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-sealed class SealedItem{
+sealed class SealedItem {
     class Selected : SealedItem()
     class Closed : SealedItem()
 }

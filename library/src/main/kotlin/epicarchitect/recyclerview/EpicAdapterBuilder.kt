@@ -30,30 +30,30 @@ class EpicAdapterBuilder(val coroutineScope: CoroutineScope) {
 
     val adapter = EpicAdapter()
 
-    inline fun <reified ITEM : Any, VIEW_BINDING : ViewBinding> setup(
-        noinline bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING,
-        setup: ItemProviderBuilder<ITEM, VIEW_BINDING>.() -> Unit = {}
+    inline fun <reified ITEM : Any, VB : ViewBinding> setup(
+        noinline bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VB,
+        setup: ItemProviderBuilder<ITEM, VB>.() -> Unit = {}
     ) = adapter.addItemConfig(
         ITEM::class,
-        ItemProviderBuilder<ITEM, VIEW_BINDING>(coroutineScope, bindingFactory).apply(setup).build()
+        ItemProviderBuilder<ITEM, VB>(coroutineScope, bindingFactory).apply(setup).build()
     )
 
     fun build() = adapter
 }
 
-class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
+class ItemProviderBuilder<ITEM : Any, VB : ViewBinding>(
     private val coroutineScope: CoroutineScope,
-    private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VIEW_BINDING
+    private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VB
 ) {
-    private var initFunction: VIEW_BINDING.() -> Unit = {}
-    private var bindFunction: suspend VIEW_BINDING.(CoroutineScope, holder: EpicAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
+    private var initFunction: VB.() -> Unit = {}
+    private var bindFunction: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
-    fun init(function: VIEW_BINDING.() -> Unit) {
+    fun init(function: VB.() -> Unit) {
         initFunction = function
     }
 
-    fun bind(function: suspend VIEW_BINDING.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit) {
+    fun bind(function: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit) {
         bindFunction = function
     }
 
@@ -63,17 +63,18 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
 
     fun build() = object : EpicAdapter.ItemConfig(
         bindingHolderFactory = { layoutInflater, container, attachToToot ->
-            object : EpicAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
+            object :
+                EpicAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
                 private var bindJob: kotlinx.coroutines.Job? = null
 
                 init {
-                    (binding as VIEW_BINDING).initFunction()
+                    (binding as VB).initFunction()
                 }
 
                 override fun bind(item: Any) {
                     val holder = this
                     bindJob = coroutineScope.launch {
-                        (binding as VIEW_BINDING).bindFunction(
+                        (binding as VB).bindFunction(
                             this,
                             holder,
                             item as ITEM
@@ -92,8 +93,10 @@ class ItemProviderBuilder<ITEM : Any, VIEW_BINDING : ViewBinding>(
 }
 
 class DiffUtilItemCallbackBuilder<ITEM : Any> {
-    private var areItemsTheSameFunction: (oldItem: Any, newItem: Any) -> Boolean = { oldItem, newItem -> oldItem == newItem }
-    private var areContentsTheSameFunction: (oldItem: Any, newItem: Any) -> Boolean = { oldItem, newItem -> oldItem == newItem }
+    private var areItemsTheSameFunction: (oldItem: Any, newItem: Any) -> Boolean =
+        { oldItem, newItem -> oldItem == newItem }
+    private var areContentsTheSameFunction: (oldItem: Any, newItem: Any) -> Boolean =
+        { oldItem, newItem -> oldItem == newItem }
 
     fun areItemsTheSame(function: (oldItem: ITEM, newItem: ITEM) -> Boolean) {
         areItemsTheSameFunction = function as (Any, Any) -> Boolean
@@ -113,14 +116,14 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
 }
 
 
-fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
-    function: suspend VIEW_BINDING.(EpicAdapter.BindingHolder, ITEM) -> Unit
+fun <ITEM : Any, VB : ViewBinding> ItemProviderBuilder<ITEM, VB>.bind(
+    function: suspend VB.(EpicAdapter.BindingHolder, ITEM) -> Unit
 ) = bind { _, bindingHolder, item ->
     function(bindingHolder, item)
 }
 
-fun <ITEM : Any, VIEW_BINDING : ViewBinding> ItemProviderBuilder<ITEM, VIEW_BINDING>.bind(
-    function: suspend VIEW_BINDING.(ITEM) -> Unit
+fun <ITEM : Any, VB : ViewBinding> ItemProviderBuilder<ITEM, VB>.bind(
+    function: suspend VB.(ITEM) -> Unit
 ) = bind { _, _, item ->
     function(item)
 }

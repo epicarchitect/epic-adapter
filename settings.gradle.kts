@@ -1,2 +1,5 @@
-include(":library")
-include(":example")
+rootProject.name = "epic-adapter"
+include(
+    ":library",
+    ":sample"
+)

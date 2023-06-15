@@ -6,11 +6,10 @@ plugins {
 
 android {
     namespace = "epicarchitect.recyclerview"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
     }
 
     buildTypes {
@@ -39,19 +38,20 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
+            withJavadocJar()
         }
     }
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.google.android.material:material:1.6.1")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
 }
 
 publishing {
@@ -59,7 +59,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.epicarchitect"
             artifactId = "epic-adapter"
-            version = "1.0.7"
+            version = "1.0.8"
             afterEvaluate {
                 from(components["release"])
             }

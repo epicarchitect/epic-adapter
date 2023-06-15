@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "epicarchitect.epic.adapter.example"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "epicarchitect.epic.adapter.example"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -60,11 +60,11 @@ android {
 
 dependencies {
     implementation(project(":library"))
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-    implementation("com.google.android.material:material:1.6.1")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
 }

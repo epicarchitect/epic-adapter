@@ -38,7 +38,8 @@ class EpicAdapter : RecyclerView.Adapter<EpicAdapter.BindingHolder>() {
         getItemViewType(items[position])
 
 
-    private fun getItemViewType(item: Any) = viewTypes.getOrPut(item::class) { calculateItemViewType(item) }
+    private fun getItemViewType(item: Any) =
+        viewTypes.getOrPut(item::class) { calculateItemViewType(item) }
 
     private fun calculateItemViewType(item: Any) =
         (listOf(item::class) + item::class.allSuperclasses)
@@ -65,7 +66,9 @@ class EpicAdapter : RecyclerView.Adapter<EpicAdapter.BindingHolder>() {
         val diffUtilItemCallback: DiffUtil.ItemCallback<Any>
     )
 
-    abstract class BindingHolder(protected val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    abstract class BindingHolder(
+        protected val binding: ViewBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
         abstract fun bind(item: Any)
         abstract fun recycle()
     }
