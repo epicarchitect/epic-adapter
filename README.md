@@ -14,7 +14,7 @@ allprojects {
 
 ```Kotlin
 dependencies {
-    implementation("com.github.epicarchitect:epic-adapter:1.0.8")
+    implementation("com.github.epicarchitect:epic-adapter:1.0.9")
 }
 ```
 
