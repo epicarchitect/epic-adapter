@@ -44,7 +44,7 @@ recyclerView.adapter = EpicAdapter {
             textView.clipToOutline = true
             // add click listeners in init
             buttonAdd.setOnClickListener {
-                viewModel.check(item.value)
+                viewModel.addItem(item.value) // for example
             }
         }
 
