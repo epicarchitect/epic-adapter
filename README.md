@@ -2,7 +2,10 @@
 
 This is an android library for RecyclerView adapters with ViewBinding.
 With it, you can quickly and easily set up RecyclerView, no more huge adapters!
-However, the library only works with ViewBinding. You can find out more about it [here](https://developer.android.com/topic/libraries/view-binding).
+However, the library only works with ViewBinding. You can find out more about
+it [here](https://developer.android.com/topic/libraries/view-binding).
+
+### Add the library to a project
 
 ```Kotlin
 // add the JitPack repository in settings.gradle.kts
