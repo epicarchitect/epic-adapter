@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             setup<CartItem, CartItemBinding>(CartItemBinding::inflate) {
-                init { item ->
+                init { item: Lazy<CartItem> ->
                     buttonAdd.setOnClickListener {
                         addAmount(item.value, 1)
                     }

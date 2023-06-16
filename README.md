@@ -40,8 +40,12 @@ dependencies {
 recyclerView.adapter = EpicAdapter {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
         // Optional
-        init {
+        init { item: Lazy<Item> ->
             textView.clipToOutline = true
+            // add click listeners in init
+            buttonAdd.setOnClickListener {
+                viewModel.check(item.value)
+            }
         }
 
         // There are three overloaded methods "bind" here
