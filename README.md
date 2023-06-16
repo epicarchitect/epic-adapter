@@ -37,35 +37,43 @@ dependencies {
 ### Simple usage (Similarly used with ViewPager2)
 
 ```Kotlin
+data class MyItem(
+    val id: Int,
+    val text: String
+)
+
 recyclerView.adapter = EpicAdapter {
-    setup<Item, ItemBinding>(ItemBinding::inflate) {
+    setup<MyItem, MyItemBinding>(MyItemBinding::inflate) {
         // Optional
-        init { item: Lazy<Item> ->
-            textView.clipToOutline = true
+        init { item: Lazy<MyItem> ->
+            textView.clipToOutline = true // for example
             // add click listeners in init
             buttonAdd.setOnClickListener {
                 viewModel.addItem(item.value) // for example
             }
         }
 
-        // There are three overloaded methods "bind" here
-        bind { item ->
+        // There are 4 overloaded methods "bind" here
+        bind { item: MyItem ->
             textView.text = item.text
         }
-        
-        bind { coroutineScope, item -> 
+        // or with holder and item
+        bind { holder: EpicAdapter.BindingHolder, item: MyItem ->
             textView.text = item.text
         }
-
-        bind { coroutineScope, holder, item ->
-            textView.text = holder.bindingAdapterPosition.toString()
+        // or with holder, payloads and item
+        bind { holder: EpicAdapter.BindingHolder, payloads: List<Any>, item: MyItem ->
+            textView.text = item.text
         }
-     
+        // or with coroutineScope, holder, payloads and item
+        bind { scope: CoroutineScope, holder: EpicAdapter.BindingHolder, payloads: List<Any>, item: MyItem ->
+            textView.text = item.text
+        }
     }
-
 }
 
 // load the data
+val items: List<Any>
 recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
@@ -87,6 +95,13 @@ recyclerView.adapter = EpicAdapter {
             }
             areContentsTheSame { oldItem, newItem ->
                 oldItem.text == newItem.text
+            }
+            payload { oldItem, newItem ->
+                if (oldItem.amount != newItem.amount) {
+                    UpdateAmount // for example
+                } else {
+                    null
+                }
             }
         }
     }

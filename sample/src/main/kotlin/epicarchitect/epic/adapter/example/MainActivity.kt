@@ -51,6 +51,39 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+                bind { holder: EpicAdapter.BindingHolder, item ->
+                    when (item) {
+                        is SealedItem.Closed -> {
+                            textView2.text = "Closed"
+                        }
+
+                        is SealedItem.Selected -> {
+                            textView2.text = "Selected"
+                        }
+                    }
+                }
+                bind { holder, payloads, item ->
+                    when (item) {
+                        is SealedItem.Closed -> {
+                            textView2.text = "Closed"
+                        }
+
+                        is SealedItem.Selected -> {
+                            textView2.text = "Selected"
+                        }
+                    }
+                }
+                bind { scope, holder, payloads, item ->
+                    when (item) {
+                        is SealedItem.Closed -> {
+                            textView2.text = "Closed"
+                        }
+
+                        is SealedItem.Selected -> {
+                            textView2.text = "Selected"
+                        }
+                    }
+                }
             }
 
             setup<CartItem, CartItemBinding>(CartItemBinding::inflate) {
