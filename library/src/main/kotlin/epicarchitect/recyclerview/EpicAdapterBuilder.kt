@@ -45,15 +45,16 @@ class ItemProviderBuilder<ITEM : Any, VB : ViewBinding>(
     private val coroutineScope: CoroutineScope,
     private val bindingFactory: (LayoutInflater, ViewGroup, Boolean) -> VB
 ) {
-    private var initFunction: VB.() -> Unit = {}
-    private var bindFunction: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit = { _, _, _ -> }
+    private var initFunction: VB.(Lazy<ITEM>) -> Unit = {}
+    private var bindFunction: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, payloads: List<Any>, ITEM) -> Unit =
+        { _, _, _, _ -> }
     private val diffUtilItemCallbackBuilder = DiffUtilItemCallbackBuilder<ITEM>()
 
-    fun init(function: VB.() -> Unit) {
+    fun init(function: VB.(Lazy<ITEM>) -> Unit) {
         initFunction = function
     }
 
-    fun bind(function: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, ITEM) -> Unit) {
+    fun bind(function: suspend VB.(CoroutineScope, EpicAdapter.BindingHolder, payloads: List<Any>, ITEM) -> Unit) {
         bindFunction = function
     }
 
@@ -63,20 +64,31 @@ class ItemProviderBuilder<ITEM : Any, VB : ViewBinding>(
 
     fun build() = object : EpicAdapter.ItemConfig(
         bindingHolderFactory = { layoutInflater, container, attachToToot ->
-            object :
-                EpicAdapter.BindingHolder(bindingFactory(layoutInflater, container, attachToToot)) {
+            object : EpicAdapter.BindingHolder(
+                bindingFactory(layoutInflater, container, attachToToot)
+            ) {
                 private var bindJob: kotlinx.coroutines.Job? = null
+                private var item: Any? = null
 
                 init {
-                    (binding as VB).initFunction()
+                    (binding as VB).initFunction(
+                        object : Lazy<ITEM> {
+                            override val value: ITEM
+                                get() = item as ITEM
+
+                            override fun isInitialized() = item != null
+                        }
+                    )
                 }
 
-                override fun bind(item: Any) {
+                override fun bind(item: Any, payloads: List<Any>) {
+                    this.item = item
                     val holder = this
                     bindJob = coroutineScope.launch {
                         (binding as VB).bindFunction(
                             this,
                             holder,
+                            payloads,
                             item as ITEM
                         )
                     }
@@ -85,6 +97,7 @@ class ItemProviderBuilder<ITEM : Any, VB : ViewBinding>(
                 override fun recycle() {
                     bindJob?.cancel()
                     bindJob = null
+                    item = null
                 }
             }
         },
@@ -97,6 +110,8 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
         { oldItem, newItem -> oldItem == newItem }
     private var areContentsTheSameFunction: (oldItem: Any, newItem: Any) -> Boolean =
         { oldItem, newItem -> oldItem == newItem }
+    private var payloadFunction: (oldItem: Any, newItem: Any) -> Any? =
+        { oldItem, newItem -> null }
 
     fun areItemsTheSame(function: (oldItem: ITEM, newItem: ITEM) -> Boolean) {
         areItemsTheSameFunction = function as (Any, Any) -> Boolean
@@ -106,24 +121,36 @@ class DiffUtilItemCallbackBuilder<ITEM : Any> {
         areContentsTheSameFunction = function as (Any, Any) -> Boolean
     }
 
+    fun payload(function: (oldItem: ITEM, newItem: ITEM) -> Any?) {
+        payloadFunction = function as (Any, Any) -> Any?
+    }
+
     fun build() = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any) =
             oldItem::class == newItem::class && areItemsTheSameFunction(oldItem, newItem)
 
         override fun areContentsTheSame(oldItem: Any, newItem: Any) =
             oldItem::class == newItem::class && areContentsTheSameFunction(oldItem, newItem)
+
+        override fun getChangePayload(oldItem: Any, newItem: Any) =
+            payloadFunction(oldItem, newItem)
     }
 }
 
+fun <ITEM : Any, VB : ViewBinding> ItemProviderBuilder<ITEM, VB>.bind(
+    function: suspend VB.(EpicAdapter.BindingHolder, payloads: List<Any>, ITEM) -> Unit
+) = bind { _, bindingHolder, payloads, item ->
+    function(bindingHolder, payloads, item)
+}
 
 fun <ITEM : Any, VB : ViewBinding> ItemProviderBuilder<ITEM, VB>.bind(
     function: suspend VB.(EpicAdapter.BindingHolder, ITEM) -> Unit
-) = bind { _, bindingHolder, item ->
+) = bind { _, bindingHolder, _, item ->
     function(bindingHolder, item)
 }
 
 fun <ITEM : Any, VB : ViewBinding> ItemProviderBuilder<ITEM, VB>.bind(
     function: suspend VB.(ITEM) -> Unit
-) = bind { _, _, item ->
+) = bind { _, _, _, item ->
     function(item)
 }

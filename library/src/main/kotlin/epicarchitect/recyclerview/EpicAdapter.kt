@@ -28,7 +28,13 @@ class EpicAdapter : RecyclerView.Adapter<EpicAdapter.BindingHolder>() {
     override fun onBindViewHolder(
         holder: BindingHolder,
         position: Int
-    ) = holder.bind(items[position])
+    ) = holder.bind(items[position], emptyList())
+
+    override fun onBindViewHolder(
+        holder: BindingHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) = holder.bind(items[position], payloads)
 
     override fun onViewRecycled(holder: BindingHolder) = holder.recycle()
 
@@ -69,7 +75,7 @@ class EpicAdapter : RecyclerView.Adapter<EpicAdapter.BindingHolder>() {
     abstract class BindingHolder(
         protected val binding: ViewBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        abstract fun bind(item: Any)
+        abstract fun bind(item: Any, payloads: List<Any>)
         abstract fun recycle()
     }
 
