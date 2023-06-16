@@ -1,37 +1,17 @@
 # Epic Adapter
 
-### Add the JitPack repository to your root build file
-
 ```Kotlin
-allprojects {
+// add the JitPack repository in settings.gradle.kts
+dependencyResolutionManagement {
     repositories {
         maven("https://jitpack.io")
     }
 }
-```
 
-### Add the dependency
-
-```Kotlin
+// add the dependency in your build.gradle.kts
 dependencies {
     implementation("com.github.epicarchitect:epic-adapter:1.0.9")
 }
-```
-
-### Preview
-
-```
-• Simple and convenient adapter
-• Will allow you not to create a separate class
-• Works with RecyclerView and ViewPager2
-```
-
-### What's included
-
-```
-• Adapter works completely on coroutines
-• DiffUtil
-• ViewTypes
 ```
 
 ### Simple usage (Similarly used with ViewPager2)
@@ -44,7 +24,7 @@ data class MyItem(
 
 recyclerView.adapter = EpicAdapter {
     setup<MyItem, MyItemBinding>(MyItemBinding::inflate) {
-        // Optional
+        // optional
         init { item: Lazy<MyItem> ->
             textView.clipToOutline = true // for example
             // add click listeners in init
@@ -53,7 +33,7 @@ recyclerView.adapter = EpicAdapter {
             }
         }
 
-        // There are 4 overloaded methods "bind" here
+        // there are 4 overloaded methods "bind" here
         bind { item: MyItem ->
             textView.text = item.text
         }
@@ -73,22 +53,20 @@ recyclerView.adapter = EpicAdapter {
 }
 
 // load the data
-val items: List<Any>
+val items: List<Any> = listOf(MyItem(1, "item1"), MyItem(2, "item2"))
 recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
 ### DiffUtil usage
 
 ```Kotlin
-// lifecycleScope is optional
 recyclerView.adapter = EpicAdapter {
     setup<Item, ItemBinding>(ItemBinding::inflate) {
-
         bind { item ->
             textView.text = item.text
         }
 
-        // Diffutils uses the equals function by default, but you can override it:
+        // diffutils uses the equals function by default, but you can override it:
         diffUtil {
             areItemsTheSame { oldItem, newItem ->
                 oldItem.id == newItem.id
@@ -106,8 +84,6 @@ recyclerView.adapter = EpicAdapter {
         }
     }
 }
-
-recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
 ### ViewTypes usage
@@ -127,16 +103,11 @@ recyclerView.requireEpicAdapter().loadItems(items)
     }
 }
 
-// There is no familiar condition for determining the viewType
-// Instead of the usual condition, for define a viewType we using hash codes of classes, as well as primitives
-// This means that the contentList must be of type Any, which will contain different objects or primitives
-// The advantage of this approach is that it has a better architecture and flexibility
+val items: ArrayList<Any> = ArrayList()
+items.add(Item1(text = "viewType1"))
+items.add(Item2(text = "viewType2"))
 
-val contentList: ArrayList<Any> = ArrayList()
-contentList.add(Item1(text = "viewType1"))
-contentList.add(Item2(text = "viewType2"))
-
-recyclerView.requireEpicAdapter().loadItems(contentList)
+recyclerView.requireEpicAdapter().loadItems(items)
 ```
 
 
