@@ -1,6 +1,7 @@
 # Epic Adapter
 
-Android library for RecyclerView adapters with ViewBinding.
+This is an android library for RecyclerView adapters with ViewBinding.
+With it, you can quickly and easily set up RecyclerView, no more huge adapters!
 
 ```Kotlin
 // add the JitPack repository in settings.gradle.kts
