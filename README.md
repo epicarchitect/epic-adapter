@@ -1,5 +1,7 @@
 # Epic Adapter
 
+Android library for RecyclerView adapters with ViewBinding.
+
 ```Kotlin
 // add the JitPack repository in settings.gradle.kts
 dependencyResolutionManagement {
