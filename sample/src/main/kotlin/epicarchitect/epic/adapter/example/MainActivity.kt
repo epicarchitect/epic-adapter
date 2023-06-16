@@ -51,39 +51,39 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                bind { holder: EpicAdapter.BindingHolder, item ->
-                    when (item) {
-                        is SealedItem.Closed -> {
-                            textView2.text = "Closed"
-                        }
-
-                        is SealedItem.Selected -> {
-                            textView2.text = "Selected"
-                        }
-                    }
-                }
-                bind { holder, payloads, item ->
-                    when (item) {
-                        is SealedItem.Closed -> {
-                            textView2.text = "Closed"
-                        }
-
-                        is SealedItem.Selected -> {
-                            textView2.text = "Selected"
-                        }
-                    }
-                }
-                bind { scope, holder, payloads, item ->
-                    when (item) {
-                        is SealedItem.Closed -> {
-                            textView2.text = "Closed"
-                        }
-
-                        is SealedItem.Selected -> {
-                            textView2.text = "Selected"
-                        }
-                    }
-                }
+//                bind { holder, item ->
+//                    when (item) {
+//                        is SealedItem.Closed -> {
+//                            textView2.text = "Closed"
+//                        }
+//
+//                        is SealedItem.Selected -> {
+//                            textView2.text = "Selected"
+//                        }
+//                    }
+//                }
+//                bind { holder, payloads, item ->
+//                    when (item) {
+//                        is SealedItem.Closed -> {
+//                            textView2.text = "Closed"
+//                        }
+//
+//                        is SealedItem.Selected -> {
+//                            textView2.text = "Selected"
+//                        }
+//                    }
+//                }
+//                bind { scope, holder, payloads, item ->
+//                    when (item) {
+//                        is SealedItem.Closed -> {
+//                            textView2.text = "Closed"
+//                        }
+//
+//                        is SealedItem.Selected -> {
+//                            textView2.text = "Selected"
+//                        }
+//                    }
+//                }
             }
 
             setup<CartItem, CartItemBinding>(CartItemBinding::inflate) {
@@ -159,8 +159,7 @@ val fakeItems = buildList {
 
     repeat(30) {
         add(
-            if (true) Item1(it, "Item1 $it")
-            else Item2(it, "Item2 $it")
+            Item1(it, "Item1 $it")
         )
     }
 
